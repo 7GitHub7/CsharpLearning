@@ -12,7 +12,19 @@ namespace DashboardUI.Validators
     {
         public PersonValidator()
         {
-            RuleFor(p => p.FirstName).NotEmpty();
+            RuleFor(p => p.FirstName)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty().WithMessage("{PropertyName} is empty")
+                .Length(2, 50).WithMessage("Length of ({TotalLength}) {PropertyName} Invalid ")
+                .Must(BeAValidName).WithMessage("{PropertyName} contains invalid characters");
         }
+
+        protected bool BeAValidName(string name) {
+            name = name.Replace(" ", "");
+            name = name.Replace("-", "");
+            return name.All(Char.IsLetter);
+                    
+        }
+
     }
 }
