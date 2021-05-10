@@ -17,6 +17,12 @@ namespace DashboardUI.Validators
                 .NotEmpty().WithMessage("{PropertyName} is empty")
                 .Length(2, 50).WithMessage("Length of ({TotalLength}) {PropertyName} Invalid ")
                 .Must(BeAValidName).WithMessage("{PropertyName} contains invalid characters");
+
+            RuleFor(p => p.LastName)
+               .Cascade(CascadeMode.StopOnFirstFailure)
+               .NotEmpty().WithMessage("{PropertyName} is empty")
+               .Length(2, 50).WithMessage("Length of ({TotalLength}) {PropertyName} Invalid ")
+               .Must(BeAValidName).WithMessage("{PropertyName} contains invalid characters");
         }
 
         protected bool BeAValidName(string name) {
