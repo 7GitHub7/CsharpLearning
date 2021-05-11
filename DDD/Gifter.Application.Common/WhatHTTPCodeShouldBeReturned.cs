@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Gifter.Application.Common
 {
-    class WhatHTTPCodeShouldBeReturned
+    public enum  WhatHTTPCodeShouldBeReturned
     {
+        Forbid,
+        NotFound,
+        BadRequest,
+        MethodFailure,
+        ok
     }
 }

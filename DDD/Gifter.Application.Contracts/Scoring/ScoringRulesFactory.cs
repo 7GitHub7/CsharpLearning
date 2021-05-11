@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Gifter.Application.Contracts.Scoring
 {
-    public class ScoringRuleFactory:IScoringRulesFactory
+    public class ScoringRulesFactory:IScoringRulesFactory
     {
-        public ScoringRuleFactory()
+        public ScoringRulesFactory()
         {
 
         }

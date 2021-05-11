@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gifter.Application.Common\Gifter.Application.Common.csproj" />
+    <ProjectReference Include="..\Gifter.Application.Contracts\Gifter.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Gifter.Domain\Gifter.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
