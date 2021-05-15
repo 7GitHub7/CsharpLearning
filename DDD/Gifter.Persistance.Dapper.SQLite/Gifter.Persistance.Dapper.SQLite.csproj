@@ -1,13 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\CallForSpeeches\" />
-    <Folder Include="Interfaces\Categories\" />
-    <Folder Include="Interfaces\Judges\" />
+    <Folder Include="Methods\Interfaces\CallForSpeeches\" />
+    <Folder Include="Methods\Interfaces\Categories\" />
+    <Folder Include="Methods\Interfaces\Judges\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gifter.Domain\Gifter.Domain.csproj" />
   </ItemGroup>
 
 </Project>

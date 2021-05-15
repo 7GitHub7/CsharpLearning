@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Gifter.Persistance.Dapper.SQLite.Interfaces
 {
-    class Doer
+    class BeforeDoer
     {
         public abstract class BeforeDoer : IBeforeDoer
         {

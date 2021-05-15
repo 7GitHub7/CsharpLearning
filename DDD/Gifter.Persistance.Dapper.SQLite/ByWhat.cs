@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Gifter.Persistance.Dapper.SQLite.Interfaces
 {
-    public enum ByWhatId
+    public enum ByWhat
     {
         UniqueId = 0,
         CreatedId = 1,
