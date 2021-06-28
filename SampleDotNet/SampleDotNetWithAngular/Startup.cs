@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SampleDotNetWithAngular.Entities;
+using SampleDotNetWithAngular.Services;
 
 namespace SampleDotNetWithAngular
 {
@@ -31,6 +32,7 @@ namespace SampleDotNetWithAngular
             services.AddScoped<RestaurantSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddScoped<IRestaurantService, RestaurantService>();
 
         }
 

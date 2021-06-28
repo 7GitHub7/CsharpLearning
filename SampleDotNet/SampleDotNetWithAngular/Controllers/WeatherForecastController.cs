@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SampleDotNetWithAngular.Entities;
 using SampleDotNetWithAngular.Models;
+using SampleDotNetWithAngular.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,69 +16,89 @@ namespace SampleDotNetWithAngular.Controllers
 
     public class WeatherForecastController : ControllerBase
     {
-        private readonly RestaurantDBContext _DBContext;
-        private readonly IMapper _mapper;
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly IRestaurantService _restaurantService;
+        
+      
 
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, RestaurantDBContext DBContext, IMapper mapper)
+        public WeatherForecastController(IRestaurantService restaurantService)
         {
-            _logger = logger;
-            _DBContext = DBContext;
-            _mapper = mapper;
+            _restaurantService = restaurantService;
         }
-        [Route("[controller]")]
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+
+
+        [Route("api/restaurant/{id}")]
+        [HttpPut]
+        public ActionResult Update([FromBody] UpdateResultsDto dto,[FromRoute] int id)
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            if (!ModelState.IsValid)
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                return BadRequest(ModelState);
+            }
+
+            var isUpdated = _restaurantService.Update(id,dto);
+
+            if (!isUpdated)
+            { 
+                return NotFound();
+            }
+            return Ok();
+
+        }
+
+        [Route("api/restaurant/{id}")]
+        [HttpDelete]
+        public ActionResult Delete([FromRoute] int id)
+        {
+
+            var IsDeleted = _restaurantService.Delete(id);
+
+            if (IsDeleted)
+            {
+                return NoContent();
+            }
+            return NotFound();
+
         }
         [Route("api/restaurant")]
         [HttpGet]
         public ActionResult<IEnumerable<RestaurantDTO>> GetAll()
         {
 
-            var restaurants =
-                _DBContext
-                .Restaurants
-                .Include(r => r.Address)
-                .Include(r => r.Dishes)
-                .ToList();
-            var restaurantsDTOs = _mapper.Map<List<RestaurantDTO>>(restaurants);
-            return Ok(restaurantsDTOs);
-
+            var restaurantsDtos = _restaurantService.GetAll();
+            return Ok(restaurantsDtos);
+         
         }
 
         [Route("api/restaurant/{id}")]
         [HttpGet]
-        public ActionResult<IEnumerable<RestaurantDTO>> GetAll([FromRoute] int id)
+        public ActionResult<IEnumerable<RestaurantDTO>> Get([FromRoute] int id)
         {
 
-            var restaurant = _DBContext
-                .Restaurants
-                .Include(r => r.Address)
-                .Include(r => r.Dishes)
-                .FirstOrDefault(r => r.Id == id);
+            var restaurantDtos = _restaurantService.GetById(id);
 
-            if (restaurant is null) return NotFound();
-            var restaurantDto = _mapper.Map<RestaurantDTO>(restaurant);
-            return Ok(restaurantDto);
+            if (restaurantDtos is null) 
+                return NotFound();
+           
+            return Ok(restaurantDtos);
 
         }
 
+        
+        
+      //  [Route("api/restaurant")]
+        [HttpPost("api/restaurant")]
+        public ActionResult CreateRestaurant([FromBody] CreateRestaurantDto dto)
+        {
+            // check if defined in dto model, attributes are passed
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        [HttpPost] ActionResult CreateRestaurant([FromBody])
+            var id = _restaurantService.Create(dto);
+
+            return Created($"/api/restaurant/{id}", null);
+        }
 
     }
 }
