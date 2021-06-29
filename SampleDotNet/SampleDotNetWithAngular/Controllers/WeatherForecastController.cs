@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace SampleDotNetWithAngular.Controllers
 {
+    // check if defined in dto model, attributes are passed
     [ApiController]
 
     public class WeatherForecastController : ControllerBase
@@ -30,17 +31,9 @@ namespace SampleDotNetWithAngular.Controllers
         [HttpPut]
         public ActionResult Update([FromBody] UpdateResultsDto dto,[FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+           
 
-            var isUpdated = _restaurantService.Update(id,dto);
-
-            if (!isUpdated)
-            { 
-                return NotFound();
-            }
+            _restaurantService.Update(id,dto);
             return Ok();
 
         }
@@ -50,12 +43,8 @@ namespace SampleDotNetWithAngular.Controllers
         public ActionResult Delete([FromRoute] int id)
         {
 
-            var IsDeleted = _restaurantService.Delete(id);
+            _restaurantService.Delete(id);
 
-            if (IsDeleted)
-            {
-                return NoContent();
-            }
             return NotFound();
 
         }
@@ -74,11 +63,7 @@ namespace SampleDotNetWithAngular.Controllers
         public ActionResult<IEnumerable<RestaurantDTO>> Get([FromRoute] int id)
         {
 
-            var restaurantDtos = _restaurantService.GetById(id);
-
-            if (restaurantDtos is null) 
-                return NotFound();
-           
+            var restaurantDtos = _restaurantService.GetById(id);       
             return Ok(restaurantDtos);
 
         }
@@ -89,12 +74,7 @@ namespace SampleDotNetWithAngular.Controllers
         [HttpPost("api/restaurant")]
         public ActionResult CreateRestaurant([FromBody] CreateRestaurantDto dto)
         {
-            // check if defined in dto model, attributes are passed
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
+           
             var id = _restaurantService.Create(dto);
 
             return Created($"/api/restaurant/{id}", null);

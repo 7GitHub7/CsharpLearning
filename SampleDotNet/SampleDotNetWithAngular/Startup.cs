@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SampleDotNetWithAngular.Entities;
+using SampleDotNetWithAngular.Middleware;
 using SampleDotNetWithAngular.Services;
 
 namespace SampleDotNetWithAngular
@@ -33,6 +34,8 @@ namespace SampleDotNetWithAngular
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddScoped<IRestaurantService, RestaurantService>();
+            services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddSwaggerGen();
 
         }
 
@@ -51,8 +54,15 @@ namespace SampleDotNetWithAngular
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseMiddleware<ErrorHandlingMiddleware>(); 
             app.UseHttpsRedirection();
+
+            //swagger
+            app.UseSwagger();
+            app.UseSwaggerUI( c=>
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API")
+            );
+
             app.UseStaticFiles();
             if (!env.IsDevelopment())
             {

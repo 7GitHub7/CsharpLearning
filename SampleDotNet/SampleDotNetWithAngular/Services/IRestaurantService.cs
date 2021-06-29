@@ -9,7 +9,7 @@ namespace SampleDotNetWithAngular.Services
         IEnumerable<RestaurantDTO> GetAll();
         RestaurantDTO GetById(int Id);
 
-        bool Delete(int id);
-        bool Update(int id, UpdateResultsDto updateResultsDto);
+        void Delete(int id);
+        void Update(int id, UpdateResultsDto updateResultsDto);
     }
 }

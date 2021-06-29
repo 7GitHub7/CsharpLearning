@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using NLog;
 using SampleDotNetWithAngular.Entities;
+using SampleDotNetWithAngular.Exceptions;
 using SampleDotNetWithAngular.Models;
 using System;
 using System.Collections.Generic;
@@ -13,37 +16,42 @@ namespace SampleDotNetWithAngular.Services
     {
         public readonly RestaurantDBContext _dbContext;
         public readonly IMapper _mapper;
-        public RestaurantService(RestaurantDBContext dbContext, IMapper mapper)
+        private readonly ILogger<RestaurantService> _logger;
+
+        public RestaurantService(RestaurantDBContext dbContext, IMapper mapper, ILogger<RestaurantService> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _logger = logger;
         }
 
-        public bool Update(int id, UpdateResultsDto updateResultsDto)
+        public void Update(int id, UpdateResultsDto updateResultsDto)
         {
             var restaurant = _dbContext.Restaurants.FirstOrDefault(r => r.Id == id);
-            if (restaurant is null) return false;
+            if (restaurant is null) 
+                throw new NotFoundException("Restaurant not found");
             restaurant.Name = updateResultsDto.Name;
             restaurant.Description = updateResultsDto.Description;
             restaurant.HasDelivery = updateResultsDto.hasDelivery;
 
             _dbContext.SaveChanges();
-            return true;
+            
         }
-        public bool Delete(int id)
+        public void Delete(int id)
         {
+            //using NLog, write to file specified logs
+            _logger.LogError($"Restaurant with id: {id} DELETE action invoked");
             var restaurant = _dbContext
              .Restaurants
              .FirstOrDefault(r => r.Id == id);
 
             if(restaurant is null)
-            {
-                return false;
-            }
+                throw new NotFoundException("Restaurant not found");
+            
             _dbContext.Restaurants.Remove(restaurant);
             _dbContext.SaveChanges();
 
-            return true;
+          
         }
         public RestaurantDTO GetById(int Id)
         {
@@ -53,7 +61,8 @@ namespace SampleDotNetWithAngular.Services
                .Include(r => r.Dishes)
                .FirstOrDefault(r => r.Id == Id);
 
-            if (restaurant is null) return null;
+            if (restaurant is null)
+                throw new NotFoundException("Restaurant not found");
 
             var result = _mapper.Map<RestaurantDTO>(restaurant);
             return result;
